@@ -1,0 +1,88 @@
+C51 COMPILER V9.60.7.0   LCD_DISPLAY                                                       12/14/2025 11:43:25 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LCD_DISPLAY
+OBJECT MODULE PLACED IN .\Objects\lcd_display.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE lcd_display.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listin
+                    -gs\lcd_display.lst) TABS(2) OBJECT(.\Objects\lcd_display.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          
+   3          #define LCD P1     // LCD data pins connected to Port 1
+   4          
+   5          sbit RS = P2^0;    // Register Select
+   6          sbit EN = P2^1;    // Enable pin
+   7          
+   8          void delay();
+   9          void lcd_cmd(unsigned char cmd);
+  10          void lcd_data(unsigned char dat);
+  11          void lcd_init();
+  12          void lcd_string(unsigned char *str);
+  13          
+  14          void main()
+  15          {
+  16   1          lcd_init();                  // Initialize LCD
+  17   1          lcd_string("HELLO GT");    // Print message
+  18   1      
+  19   1          while(1);                    // Stay here
+  20   1      }
+  21          
+  22          void lcd_init()
+  23          {
+  24   1          lcd_cmd(0x38);   // 8-bit, 2 line, 5x7 font
+  25   1          lcd_cmd(0x0C);   // Display ON, cursor OFF
+  26   1          lcd_cmd(0x06);   // Auto increment cursor
+  27   1          lcd_cmd(0x01);   // Clear display
+  28   1      }
+  29          
+  30          void lcd_cmd(unsigned char cmd)
+  31          {
+  32   1          LCD = cmd;
+  33   1          RS = 0;          // Command mode
+  34   1          EN = 1;
+  35   1          delay();
+  36   1          EN = 0;
+  37   1      }
+  38          
+  39          void lcd_data(unsigned char dat)
+  40          {
+  41   1          LCD = dat;
+  42   1          RS = 1;          // Data mode
+  43   1          EN = 1;
+  44   1          delay();
+  45   1          EN = 0;
+  46   1      }
+  47          
+  48          void lcd_string(unsigned char *str)
+  49          {
+  50   1          while(*str)
+  51   1          {
+  52   2              lcd_data(*str);
+  53   2              str++;
+  54   2          }
+C51 COMPILER V9.60.7.0   LCD_DISPLAY                                                       12/14/2025 11:43:25 PAGE 2   
+
+  55   1      }
+  56          
+  57          void delay()
+  58          {
+  59   1          unsigned int i, j;
+  60   1          for(i = 0; i < 50; i++)
+  61   1              for(j = 0; j < 1275; j++);
+  62   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    122    ----
+   CONSTANT SIZE    =      9    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
