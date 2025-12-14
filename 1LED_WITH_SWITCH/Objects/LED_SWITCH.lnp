@@ -1,0 +1,3 @@
+".\Objects\LED_SWITCH.obj" 
+TO ".\Objects\LED_SWITCH" 
+PRINT(".\Listings\LED_SWITCH.m51")
