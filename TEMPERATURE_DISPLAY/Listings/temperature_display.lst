@@ -1,0 +1,113 @@
+C51 COMPILER V9.60.7.0   TEMPERATURE_DISPLAY                                               12/20/2025 11:15:27 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE TEMPERATURE_DISPLAY
+OBJECT MODULE PLACED IN .\Objects\temperature_display.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE temperature_display.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(
+                    -.\Listings\temperature_display.lst) TABS(2) OBJECT(.\Objects\temperature_display.obj)
+
+line level    source
+
+   1          #include <reg51.h>
+   2          
+   3          #define lcd P0
+   4          
+   5          sbit rs = P2^0;
+   6          sbit en = P2^1;
+   7          
+   8          sbit rd = P3^7;
+   9          sbit wr = P3^6;
+  10          sbit intr = P3^5;
+  11          
+  12          void delay(unsigned int t)
+  13          {
+  14   1          unsigned int i,j;
+  15   1          for(i=0;i<t;i++)
+  16   1              for(j=0;j<1275;j++);
+  17   1      }
+  18          
+  19          void lcd_cmd(unsigned char c)
+  20          {
+  21   1          lcd = c;
+  22   1          rs = 0;
+  23   1          en = 1;
+  24   1          delay(1);
+  25   1          en = 0;
+  26   1      }
+  27          
+  28          void lcd_data(unsigned char d)
+  29          {
+  30   1          lcd = d;
+  31   1          rs = 1;
+  32   1          en = 1;
+  33   1          delay(1);
+  34   1          en = 0;
+  35   1      }
+  36          
+  37          void lcd_init()
+  38          {
+  39   1          lcd_cmd(0x38); // 8-bit, 2 line
+  40   1          lcd_cmd(0x0C); // Display ON
+  41   1          lcd_cmd(0x06); // Cursor move
+  42   1          lcd_cmd(0x01); // Clear
+  43   1      }
+  44          
+  45          unsigned char adc_read()
+  46          {
+  47   1          unsigned char value;
+  48   1      
+  49   1          wr = 0;
+  50   1          delay(1);
+  51   1          wr = 1;
+  52   1      
+  53   1          while(intr == 1);
+  54   1      
+C51 COMPILER V9.60.7.0   TEMPERATURE_DISPLAY                                               12/20/2025 11:15:27 PAGE 2   
+
+  55   1          rd = 0;
+  56   1          value = P1;
+  57   1          rd = 1;
+  58   1      
+  59   1          return value;
+  60   1      }
+  61          
+  62          void main()
+  63          {
+  64   1          unsigned char adc, temp;
+  65   1      
+  66   1          lcd_init();
+  67   1          lcd_cmd(0x80);
+  68   1          lcd_data('T');
+  69   1          lcd_data('E');
+  70   1          lcd_data('M');
+  71   1          lcd_data('P');
+  72   1          lcd_data(':');
+  73   1      
+  74   1          while(1)
+  75   1          {
+  76   2              adc = adc_read();
+  77   2              temp = adc / 2;
+  78   2      
+  79   2              lcd_cmd(0x85);
+  80   2              lcd_data((temp/10) + '0');
+  81   2              lcd_data((temp%10) + '0');
+  82   2              lcd_data(223);   // Degree symbol
+  83   2              lcd_data('C');
+  84   2      
+  85   2              delay(500);
+  86   2          }
+  87   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    186    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

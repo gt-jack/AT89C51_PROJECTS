@@ -1,0 +1,3 @@
+".\Objects\temperature_display.obj" 
+TO ".\Objects\temperature_display" 
+PRINT(".\Listings\temperature_display.m51")
